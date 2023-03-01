@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  misskey:
+    image: misskey/misskey
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_health
+    volumes:
+      - ./misskey/files:/misskey/files
+      - ./misskey/.config:/misskey/.config:ro
+    networks:
+      - default
+      - main_default
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.misskey.rule=Host(`m.daco.dev`)"
+        - "traefik.http.routers.misskey.tls.certresolver=myresolver"
+        - "traefik.http.services.misskey.loadbalancer.server.port=3000"
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - ./misskey/redis:/data
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 5s
+      retries: 20
+
+  db:
+    restart: always
+    image: postgres:15-alpine
+    env_file:
+      - misskey/.config/docker.env
+    volumes:
+      - ./misskey/db:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
+      interval: 5s
+      retries: 20
+
+networks:
+  main_default:
+    external: true
+    name: main_default
