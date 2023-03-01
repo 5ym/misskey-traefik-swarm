@@ -7,7 +7,7 @@ services:
       db:
         condition: service_healthy
       redis:
-        condition: service_health
+        condition: service_healthy
     volumes:
       - ./misskey/files:/misskey/files
       - ./misskey/.config:/misskey/.config:ro
