@@ -17,7 +17,7 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.misskey.rule=Host(`m.daco.dev`)"
+        - "traefik.http.routers.misskey.rule=Host(`m.doany.io`)"
         - "traefik.http.routers.misskey.tls.certresolver=myresolver"
         - "traefik.http.services.misskey.loadbalancer.server.port=3000"
 
