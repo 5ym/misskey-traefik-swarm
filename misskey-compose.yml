@@ -31,7 +31,6 @@ services:
       retries: 20
 
   db:
-    restart: always
     image: postgres:15-alpine
     env_file:
       - misskey/.config/docker.env
